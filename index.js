@@ -10,7 +10,11 @@ $(function () {
 
             cards += `
             <div class="card text-black bg-light mb-3" style="max-width: 18rem;">
-                <div class="card-header">${element.symbol}</div>
+                <div class="card-header">${element.symbol}
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                    </div>
+                </div>
                     <div class="card-body">
                         <h5 class="card-title">${element.name}</h5>
                         <div id="${element.id}" class="card-text">
@@ -83,10 +87,10 @@ $(function () {
     })
 
 
-    $("#myInput").on("keyup", function() {
+    $("#myInput").on("keyup", function () {
         var value = $(this).val().toLowerCase();
-        $(".card").filter(function() {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        $(".card").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
-      });
+    });
 })

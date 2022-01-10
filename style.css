@@ -5,17 +5,9 @@
     -o-background-size: cover;
     background-size: cover;
 }
-.header{
-    margin: 0ch;
-    height: 160px;
-    display: flex;
-    justify-content: left;
-    align-items: center;
-}
 .title{
-    text-align: center;
-    font-size: 50px;
-    color:white;
+    margin-right: 50%;
+    font-size: 25px;
 }
 
 #coins-container{
@@ -33,12 +25,20 @@
     min-height: 190px;
 }
 
+.card-header{
+    display: flex;
+    justify-content: space-between;
+}
+
 .about{
     font-size: large;
     margin-left: 20px;
     color: white;
 }
 
+.navbar{
+    position: fixed;
+}
 /*@media (prefers-reduced-motion: no-preference) {
     .App-logo {
       animation: App-logo-spin infinite 20s linear;
