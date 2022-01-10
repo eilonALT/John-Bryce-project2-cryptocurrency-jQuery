@@ -3,7 +3,11 @@
     */background-repeat: no-repeat;
 }
 .header{
-    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgFHAa6ZouvY3euWgr_7wUVexRnPLyUtptBw&usqp=CAU")!important;
+    background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgFHAa6ZouvY3euWgr_7wUVexRnPLyUtptBw&usqp=CAU") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
     margin: 0ch;
     height: 160px;
     display: flex;
