@@ -38,4 +38,12 @@ nav{
 .about{
     font-size: large;
     margin-left: 20px;
+    color: white;
 }
+
+/*@media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }*/
+  
