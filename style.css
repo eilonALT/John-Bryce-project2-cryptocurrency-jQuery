@@ -1,0 +1,39 @@
+.body{
+    /*background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHModSdxYbcwrEqYxPE-IT8OsS6n9IxhMNxA&usqp=CAU");
+    */background-repeat: no-repeat;
+}
+.header{
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgFHAa6ZouvY3euWgr_7wUVexRnPLyUtptBw&usqp=CAU")!important;
+    margin: 0ch;
+    height: 160px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+.title{
+    text-align: center;
+    font-size: 50px;
+    color:white;
+}
+nav{
+   background-color: #071726!important
+}
+#coins-container{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start
+}
+
+.card{
+    margin: 15px;
+    width: 15rem;
+    min-height: 190px;
+}
+
+.about{
+    font-size: large;
+    margin-left: 20px;
+}
