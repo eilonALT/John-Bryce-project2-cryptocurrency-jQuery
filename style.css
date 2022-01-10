@@ -15,11 +15,9 @@
 .title{
     text-align: center;
     font-size: 50px;
-    color:white;
+    color:black;
 }
-nav{
-   background-color: #071726!important
-}
+
 #coins-container{
     margin-top: 10px;
     display: flex;
