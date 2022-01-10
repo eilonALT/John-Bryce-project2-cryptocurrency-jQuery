@@ -1,13 +1,11 @@
 .body{
-    /*background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHModSdxYbcwrEqYxPE-IT8OsS6n9IxhMNxA&usqp=CAU");
-    */background-repeat: no-repeat;
-}
-.header{
-    background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgFHAa6ZouvY3euWgr_7wUVexRnPLyUtptBw&usqp=CAU") no-repeat center center fixed;
+    background: url("/page.jpg") no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+}
+.header{
     margin: 0ch;
     height: 160px;
     display: flex;
