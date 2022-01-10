@@ -55,7 +55,7 @@ $(function () {
     })
 
     $(document).on("click", ".show-more-button", function () {
-        let id = ($(this).parent().attr("id"))
+        let id = $(this).parent().attr("id")
         $.ajax({
             url: `https://api.coingecko.com/api/v3/coins/${id}`,
             success: data => {
