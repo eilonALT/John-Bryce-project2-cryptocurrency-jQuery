@@ -89,7 +89,6 @@ $(function () {
     })
 
     $(document).on("click", ".show-less-button", function () {
-       new Number(godel)=prompt("enter godel")
         $(this).parent().children("div").toggle("slow")
         $(this).parent().children("button").toggle("fast")
     })
