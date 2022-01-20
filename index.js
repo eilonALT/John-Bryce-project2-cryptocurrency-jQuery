@@ -1,4 +1,6 @@
 $(function () {
+    $(".progress").hide()
+
 
     const loadcoins = async function (data) {
         let cardsData = await data
@@ -29,6 +31,7 @@ $(function () {
         $("#coins-container").append(cards)
         $(".show-more-info").hide()
         $(".show-less-button").hide()
+        $(".progress").hide()
     }
 
     const loadMoreInfo = function (data, element) {
@@ -49,8 +52,12 @@ $(function () {
 
 
     $("#show-coins-button").on("click", function () {
+        $(".progress").toggle("slow")
+
         $.ajax({
             url: "https://api.coingecko.com/api/v3/coins/list",
+            timeout: '10000000',
+            cache: true,
             success: data => {
                 //console.table(data)
                 loadcoins(data)
@@ -82,6 +89,7 @@ $(function () {
     })
 
     $(document).on("click", ".show-less-button", function () {
+       new Number(godel)=prompt("enter godel")
         $(this).parent().children("div").toggle("slow")
         $(this).parent().children("button").toggle("fast")
     })
@@ -93,4 +101,12 @@ $(function () {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
+
+    $(document).on("click", ".form-check-input:checked", function () {
+        $(document).dialog({
+            title: "hello"
+        })
+    })
+
+
 })
