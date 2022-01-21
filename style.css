@@ -1,9 +1,9 @@
+
+a:hover{
+    cursor: pointer;
+}
 .body{
-    background: url("/page.jpg") no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    background-color: black;
 }
 .title{
     margin-right: 50%;

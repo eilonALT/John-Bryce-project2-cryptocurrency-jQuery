@@ -1,3 +1,5 @@
+let checked = 0;
+
 $(function () {
     $(".progress").hide()
 
@@ -102,10 +104,22 @@ $(function () {
     });
 
     $(document).on("click", ".form-check-input:checked", function () {
-        $(document).dialog({
-            title: "hello"
-        })
+        checked += 2
+        if (checked >= 6) {
+            $(".form-check-input").attr("data-bs-toggle", "modal")
+            $(".form-check-input").attr("data-bs-target", "#exampleModal")
+            // data-bs-toggle="modal" data-bs-target="#exampleModal"
+        }
     })
 
+    $(document).on("click", ".form-check-input", function () {
+        checked--
+        if (checked === 6) {
+            //removeAttr
+            $(".form-check-input").removeAttr("data-bs-toggle", "modal")
+            $(".form-check-input").removeAttr("data-bs-target", "#exampleModal")
+        }
+        console.log(checked)
+    })
 
 })
