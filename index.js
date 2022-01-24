@@ -34,6 +34,8 @@ $(function () {
         $(".show-more-info").hide()
         $(".show-less-button").hide()
         $(".progress").hide()
+
+
     }
 
     const loadMoreInfo = function (data, element) {
@@ -57,7 +59,7 @@ $(function () {
         $(".progress").toggle("slow")
 
         $.ajax({
-            url: "https://api.coingecko.com/api/v3/coins/list",
+            url: "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd",
             timeout: '10000000',
             cache: true,
             success: data => {
@@ -104,21 +106,26 @@ $(function () {
     });
 
     $(document).on("click", ".form-check-input:checked", function () {
+
         checked += 2
-        if (checked >= 6) {
+        console.log(checked)
+        if (checked === 6) {
             $(".form-check-input").attr("data-bs-toggle", "modal")
             $(".form-check-input").attr("data-bs-target", "#exampleModal")
-            // data-bs-toggle="modal" data-bs-target="#exampleModal"
         }
+        else {
+            $(".form-check-input").removeAttr("data-bs-toggle", "modal")
+            $(".form-check-input").removeAttr("data-bs-target", "#exampleModal")
+        }
+
+
+        //$(".modal-body").append($(this).parent().clone())
+        $(".modal-body").append($(this).parent().parent().clone())
+
     })
 
     $(document).on("click", ".form-check-input", function () {
         checked--
-        if (checked === 6) {
-            //removeAttr
-            $(".form-check-input").removeAttr("data-bs-toggle", "modal")
-            $(".form-check-input").removeAttr("data-bs-target", "#exampleModal")
-        }
         console.log(checked)
     })
 
