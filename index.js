@@ -108,8 +108,8 @@ $(function () {
     $(document).on("click", ".form-check-input:checked", function () {
 
         checked += 2
-        console.log(checked)
-        if (checked === 6) {
+        //console.log(checked)
+        if (checked >= 6) {
             $(".form-check-input").attr("data-bs-toggle", "modal")
             $(".form-check-input").attr("data-bs-target", "#exampleModal")
         }
@@ -120,7 +120,7 @@ $(function () {
 
 
         //$(".modal-body").append($(this).parent().clone())
-        $(".modal-body").append($(this).parent().parent().clone())
+        $(".modal-body").append($(this).parent().parent().clone().attr("aria-label", "Close").attr("data-bs-dismiss", "modal").attr("data-bs-dismiss", "modal"))
 
     })
 
