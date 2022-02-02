@@ -4,6 +4,7 @@ $(function () {
     $(".progress").hide()
 
     const loadcoins = async function (data) {
+
         let cardsData = await data
         $("#coins-container").empty()
 
@@ -29,15 +30,16 @@ $(function () {
             </div>
             `
         }
+
         $("#coins-container").append(cards)
         $(".show-more-info").hide()
         $(".show-less-button").hide()
         $(".progress").hide()
-
     }
 
-    const loadMoreInfo = function (data, element) {
+    const loadMoreInfo = function (data, element, id) {
         element.empty()
+        localStorage.setItem(`${id}`, JSON.stringify(data))
 
         let moreInfo = ""
         moreInfo += `
@@ -52,7 +54,6 @@ $(function () {
         element.parent().children("button").toggle("fast")
     }
 
-
     $("#show-coins-button").on("click", function () {
         $(".progress").toggle("slow")
 
@@ -61,7 +62,6 @@ $(function () {
             timeout: '10000000',
             cache: true,
             success: data => {
-                //console.table(data)
                 loadcoins(data)
             }
         })
@@ -69,13 +69,21 @@ $(function () {
 
     $(document).on("click", ".show-more-button", function () {
         let id = $(this).parent().attr("id")
-        $.ajax({
-            url: `https://api.coingecko.com/api/v3/coins/${id}`,
-            success: data => {
-                //console.table(data)
-                loadMoreInfo(data, $(this).parent().children("div"))
-            }
-        })
+        let coin = JSON.parse(localStorage.getItem(`${id}`))
+
+        if (coin === null) {
+            $.ajax({
+                url: `https://api.coingecko.com/api/v3/coins/${id}`,
+                success: data => {
+                    console.log("from api")
+                    loadMoreInfo(data, $(this).parent().children("div"), id)
+                }
+            })
+        }
+        else {
+            console.log("from-localstorage")
+            loadMoreInfo(coin, $(this).parent().children("div"), id)
+        }
     })
 
     $("#about-button").on("click", function () {
@@ -134,6 +142,10 @@ $(function () {
         }
 
     })
+  
+    setInterval(function () {
+        localStorage.clear();
+    }, 120000)
 
     const asignModal = function () {
         $(".form-check-input:checkbox:checked").each(function () {
