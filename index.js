@@ -3,7 +3,6 @@ let checked = 0;
 $(function () {
     $(".progress").hide()
 
-
     const loadcoins = async function (data) {
         let cardsData = await data
         $("#coins-container").empty()
@@ -34,7 +33,6 @@ $(function () {
         $(".show-more-info").hide()
         $(".show-less-button").hide()
         $(".progress").hide()
-
 
     }
 
@@ -125,6 +123,16 @@ $(function () {
     $(document).on("click", ".form-check-input:checkbox:not(:checked)", function () {
         checked--
         console.log(checked)
+
+        if (checked === 5) {
+            $(".form-check-input").attr("data-bs-toggle", "modal")
+            $(".form-check-input").attr("data-bs-target", "#exampleModal")
+        }
+        else {
+            $(".form-check-input").removeAttr("data-bs-toggle", "modal")
+            $(".form-check-input").removeAttr("data-bs-target", "#exampleModal")
+        }
+
     })
 
     const asignModal = function () {
