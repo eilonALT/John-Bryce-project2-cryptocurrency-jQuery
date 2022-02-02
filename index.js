@@ -105,11 +105,11 @@ $(function () {
         });
     });
 
-    $(document).on("click", ".form-check-input:checked", function () {
-
-        checked += 2
-        //console.log(checked)
-        if (checked >= 6) {
+    $(document).on("click", ".form-check-input:checkbox:checked", function () {
+        //$(this).switch("slow")
+        checked++
+        console.log(checked)
+        if (checked === 5) {
             $(".form-check-input").attr("data-bs-toggle", "modal")
             $(".form-check-input").attr("data-bs-target", "#exampleModal")
         }
@@ -118,15 +118,19 @@ $(function () {
             $(".form-check-input").removeAttr("data-bs-target", "#exampleModal")
         }
 
-
-        //$(".modal-body").append($(this).parent().clone())
-        $(".modal-body").append($(this).parent().parent().clone().attr("aria-label", "Close").attr("data-bs-dismiss", "modal").attr("data-bs-dismiss", "modal"))
-
+        $(".modal-body").html("")
+        asignModal()
     })
 
-    $(document).on("click", ".form-check-input", function () {
+    $(document).on("click", ".form-check-input:checkbox:not(:checked)", function () {
         checked--
         console.log(checked)
     })
+
+    const asignModal = function () {
+        $(".form-check-input:checkbox:checked").each(function () {
+            $(".modal-body").append($(this).parent().parent().clone().attr("aria-label", "Close").attr("data-bs-dismiss", "modal").attr("data-bs-dismiss", "modal"))
+        })
+    }
 
 })
