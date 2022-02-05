@@ -16,7 +16,7 @@ $(function () {
             <div class="card text-black bg-light mb-3" style="max-width: 18rem;">
                 <div class="card-header">${element.symbol}
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                        <input class="form-check-input" name=${element.symbol} type="checkbox" role="switch" id="flexSwitchCheckDefault">
                     </div>
                 </div>
                     <div class="card-body">
@@ -129,8 +129,11 @@ $(function () {
     })
 
     $(document).on("click", ".form-check-input:checkbox:not(:checked)", function () {
-        checked--
-        console.log(checked)
+        checked--;
+        const cardsForUncheck = $(`input[name="${$(this).attr('name')}"]`);
+        //Unchecking all cards
+        cardsForUncheck.prop('checked',false);
+
 
         if (checked === 5) {
             $(".form-check-input").attr("data-bs-toggle", "modal")
