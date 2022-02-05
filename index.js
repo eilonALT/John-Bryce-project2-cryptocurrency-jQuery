@@ -1,3 +1,4 @@
+
 let checked = 0;
 let interval;
 let options;
@@ -5,13 +6,13 @@ let liveReportsNames = []
 
 $(function () {
     $(".progress").hide()
-
+    /*--------------------------------------------- load all coins to the page----------------------------------------------- */
     const loadcoins = async function (data) {
 
         let cardsData = await data
-        $("#coins-container").empty()
-        $("#chartContainer").empty()
-        clearInterval(interval)
+        $("#coins-container").empty()//if clicked more than once
+        $("#chartContainer").empty()//clear chart if needed
+        clearInterval(interval)//clear interval if needed
 
         let cards = ""
         for (let i = 0; i < 50; i++) {
@@ -37,13 +38,15 @@ $(function () {
         }
 
         $("#coins-container").append(cards)
-        $(".show-more-info").hide()
-        $(".show-less-button").hide()
+
+        $(".show-more-info").hide()//hide the space for the more info until needed 
+        $(".show-less-button").hide()//same
         $(".progress").hide()
     }
+    /*--------------------------------------load new info for the selected coin----------------------------------------------- */
     const loadMoreInfo = function (data, element, id) {
-        element.empty()
-        localStorage.setItem(`${id}`, JSON.stringify(data))
+        element.empty()//if clicked more then once
+        localStorage.setItem(`${id}`, JSON.stringify(data))//save to local storage ..skipped unnecessary api calls
 
         let moreInfo = ""
         moreInfo += `
@@ -57,9 +60,11 @@ $(function () {
         element.toggle("slow")
         element.parent().children("button").toggle("fast")
     }
+    /*--------------------------------------initialize first chart with selected coins names----------------------------------------------- */
     const initLiveChart = function (names) {
         $("#coins-container").empty()
 
+        //chart properties:
         options = {
             animationEnabled: true,
             theme: "light2",
@@ -150,93 +155,103 @@ $(function () {
         }
         $(".progress").hide()
     }
+    /*------------------------------------------------append new data to the live chart------------------------------------------------------ */
     const loadLiveReports = function (data) {
         let values = []
+        // a loop to save all coins values into array
         Object.entries(data).forEach(element => {
             if (!!element) {
-                console.log(element)
-                console.log(Object.entries(element[1])[0][1])
                 values.push(Object.entries(element[1])[0][1])
             }
         })
 
-        //console.log("names:" + names)
-        console.log("values:" + values)
-
         let i = 0;
+        //loop to append all values as chart points
         values.forEach(() => {
             options.data[i].dataPoints.push({ x: new Date(), y: values[i] })
             i++
         })
-
-        $("#chartContainer").CanvasJSChart(options);
+        $("#chartContainer").CanvasJSChart(options);//render chart
     }
+    /*------------------------------------------------an api call to get coins data------------------------------------------------------ */
     $("#show-coins-button").on("click", function () {
+        clearInterval(interval)//clear interval if needed
         $(".progress").toggle("slow")
         checked = 0;
         liveReportsNames = []
 
         $.ajax({
-            url: "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd",
-            timeout: '10000000',
+            url: "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd",//get the coins by value
+            timeout: '10000000',//only to make the progress bar more revealing
             cache: true,
             success: data => {
                 loadcoins(data)
             }
         })
     })
+    /*------------------------------------------------an api call to get more info on clicked coin------------------------------------------------------ */
     $(document).on("click", ".show-more-button", function () {
-        let id = $(this).parent().attr("id")
-        let coin = JSON.parse(localStorage.getItem(`${id}`))
+        let id = $(this).parent().attr("id")//id needed for the api call
+        let coin = JSON.parse(localStorage.getItem(`${id}`))//a varibale to check if the coin info are already in the local storage
 
         if (coin === null) {
             $.ajax({
-                url: `https://api.coingecko.com/api/v3/coins/${id}`,
+                url: `https://api.coingecko.com/api/v3/coins/${id}`,//get the coin info
                 success: data => {
-                    console.log("from api")
+                    console.log("from api")//state if an api call commited
                     loadMoreInfo(data, $(this).parent().children("div"), id)
                 }
             })
         }
         else {
-            console.log("from-localstorage")
+            console.log("from-localstorage")//state that the data is already in the local storage
             loadMoreInfo(coin, $(this).parent().children("div"), id)
         }
     })
+    /*------------------------------------------------ *bonus* open live server section  ------------------------------------------------------ */
     $("#show-live-reports-button").on("click", function () {
 
         checked = 0;
+        $("#chartContainer").empty()//clear chart if needed
+        clearInterval(interval)//clear interval if clicked more than once without checking new coins
         liveReportsNames = []
 
-        let liveReportsNamesList = liveReportsList()
-        if (liveReportsNamesList.length > 0) {
-            initLiveChart(liveReportsNamesList)
+        let liveReportsNamesList = liveReportsList()//get the selected coins names for the live server
+        if (liveReportsNamesList.length > 0) { //check if any was selected
+
+            initLiveChart(liveReportsNamesList)//empty chart with names
+
+            /** first api call to skiped the first 2 sec wait of the interval */
             $.ajax({
-                url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${liveReportsNamesList}&tsyms=USD`,
+                url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${liveReportsNamesList}&tsyms=USD`,//an api call to selected coins info
                 cache: true,
                 success: data => {
                     loadLiveReports(data)
                 }
             })
+            /** api call every 2 sec for new info to the chart */
             interval = setInterval(function () {
                 $.ajax({
                     url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${liveReportsNamesList}&tsyms=USD`,
                     cache: true,
                     success: data => {
-                        loadLiveReports(data)
+                        loadLiveReports(data)//append to chart
                     }
                 })
             }, 2000)
         }
         else {
-            alert("please select coins ")
+            alert("please select coins ")//no coins selected
         }
     })
+    /*------------------------------------------------open the about section------------------------------------------------------ */
     $("#about-button").on("click", function () {
-        $("#chartContainer").empty()
+        $("#chartContainer").empty()//clear chart if needed
+        clearInterval(interval)//clear interval if needed
+        $("#coins-container").empty()//clear page
+
+        checked = 0;
         liveReportsNames = []
-        clearInterval(interval)
-        $("#coins-container").empty()
 
         let about = `
             <p class ="about">
@@ -246,58 +261,66 @@ $(function () {
             </p>
         `
         $("#coins-container").append(about)
-        checked = 0;
     })
+    /*-----------------------------------------------toggle between show more and show less--------------------------------------------------- */
     $(document).on("click", ".show-less-button", function () {
-        $(this).parent().children("div").toggle("slow")
-        $(this).parent().children("button").toggle("fast")
+        $(this).parent().children("div").toggle("slow")//hide the more info
+        $(this).parent().children("button").toggle("fast")//hide the show less button
     })
+    /*------------------------------------------------search func------------------------------------------------------ */
     $("#myInput").on("keyup", function () {
         var value = $(this).val().toLowerCase();
         $(".card").filter(function () {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
+    /*------------------------------------------------checked coin func------------------------------------------------------ */
     $(document).on("click", ".form-check-input:checkbox:checked", function () {
-        //$(this).switch("slow")
         checked++
-        console.log(checked)
-        const cardsForUncheck = $(`input[name="${$(this).attr('name')}"]`);
-        //Unchecking all cards
-        cardsForUncheck.prop('checked', true);
 
+        // const cardsForUncheck = $(`input[name="${$(this).attr('name')}"]`);
+        // cardsForUncheck.prop('checked', true);     *****needed if there were cases when the modal had option to check input also*******
+
+        //set modal on
         if (checked == 6) {
-            asignModal()
+            asignModal()//asign all checked coins
             $('#exampleModal').modal("show")
         }
 
+        if (checked > 6) { //eliminate the option to check more than 6 ,
+            // necessery if the modal was close by clicking the screen and not uncheck other coin
+            checked--
+            $(this).prop('checked', false)
+            $('#exampleModal').modal("show")
+        }
     })
+    /*------------------------------------------------uncheck coin func------------------------------------------------------ */
     $(document).on("click", ".form-check-input:checkbox:not(:checked)", function () {
         checked--;
-        console.log(checked)
-        const cardsForUncheck = $(`input[name="${$(this).attr('name')}"]`);
-        //Unchecking all cards
-        cardsForUncheck.prop('checked', false);
-        $(".modal-body").html("")
 
+        const cardsForUncheck = $(`input[name="${$(this).attr('name')}"]`);
+        cardsForUncheck.prop('checked', false);// uncheck from modal and main page
+
+        $(".modal-body").html("")//all modal coins appended only when more than five coins selected
     })
+    /*------------------------------------------------clear local storage every 2 min------------------------------------------------------ */
     setInterval(function () {
         localStorage.clear();
     }, 120000)
+    /*------------------------------------------------ asign all checked coins to modal ------------------------------------------------------ */
     const asignModal = function () {
         $(".modal-body").html("")
+        // a loop for all checked coins
         $(".form-check-input:checkbox:checked").each(function () {
-            $(".modal-body").append($(this).parent().parent().clone().attr("aria-label", "Close").attr("data-bs-dismiss", "modal").attr("data-bs-dismiss", "modal"))
+            $(".modal-body").append($(this).parent().parent().clone().attr("aria-label", "Close").attr("data-bs-dismiss", "modal"))
+            //append to modal with the close option to the check box
         })
     }
+    /*------------------------------------------------make a list of all check coins names------------------------------------------------------ */
     const liveReportsList = () => {
         $(".form-check-input:checkbox:checked").each(function () {
             liveReportsNames.push($(this)[0].name)
-            // const cardsForUncheck = $(`input[name="${$(this)[0].name}"]`);
-            // //Unchecking all cards
-            // cardsForUncheck.prop('checked', false);
         })
-        console.log("live report list = " + liveReportsNames)
         return liveReportsNames
     }
 })
