@@ -1,4 +1,3 @@
-
 let checked = 0;
 let interval;
 let options;
