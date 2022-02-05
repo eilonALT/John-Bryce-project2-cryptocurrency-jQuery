@@ -1,6 +1,7 @@
 let checked = 0;
 let interval;
 let options;
+let liveReportsNames = []
 
 $(function () {
     $(".progress").hide()
@@ -56,15 +57,8 @@ $(function () {
         element.toggle("slow")
         element.parent().children("button").toggle("fast")
     }
-    const initLiveChart = function () {
+    const initLiveChart = function (names) {
         $("#coins-container").empty()
-
-        // let names = []
-        // Object.keys(data).forEach(element => {
-        //     if (!!element) {
-        //         names.push(element)
-        //     }
-        // })
 
         options = {
             animationEnabled: true,
@@ -93,7 +87,7 @@ $(function () {
             data: [{
                 type: "line",
                 showInLegend: true,
-                name: "names[0]",
+                name: names[0],
                 markerType: "square",
                 xValueFormatString: 'HH:mm:ss',
                 color: "black",
@@ -104,7 +98,7 @@ $(function () {
             {
                 type: "line",
                 showInLegend: true,
-                name: "names[1]",
+                name: names[1],
                 markerType: "square",
                 xValueFormatString: 'HH:mm:ss',
                 color: "yellow",
@@ -114,7 +108,7 @@ $(function () {
             }, {
                 type: "line",
                 showInLegend: true,
-                name: "names[1]",
+                name: names[2],
                 markerType: "square",
                 xValueFormatString: 'HH:mm:ss',
                 color: "green",
@@ -124,7 +118,7 @@ $(function () {
             }, {
                 type: "line",
                 showInLegend: true,
-                name: "names[1]",
+                name: names[3],
                 markerType: "square",
                 xValueFormatString: 'HH:mm:ss',
                 color: "red",
@@ -134,7 +128,7 @@ $(function () {
             }, {
                 type: "line",
                 showInLegend: true,
-                name: "names[1]",
+                name: names[4],
                 markerType: "square",
                 xValueFormatString: 'HH:mm:ss',
                 color: "blue",
@@ -158,9 +152,9 @@ $(function () {
     }
     const loadLiveReports = function (data) {
         let values = []
-
         Object.entries(data).forEach(element => {
             if (!!element) {
+                console.log(element)
                 console.log(Object.entries(element[1])[0][1])
                 values.push(Object.entries(element[1])[0][1])
             }
@@ -174,10 +168,13 @@ $(function () {
             options.data[i].dataPoints.push({ x: new Date(), y: values[i] })
             i++
         })
+
         $("#chartContainer").CanvasJSChart(options);
     }
     $("#show-coins-button").on("click", function () {
         $(".progress").toggle("slow")
+        checked = 0;
+        liveReportsNames = []
 
         $.ajax({
             url: "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd",
@@ -207,21 +204,37 @@ $(function () {
         }
     })
     $("#show-live-reports-button").on("click", function () {
-        $(".progress").toggle("slow")
-        //liveReportsList()
-        initLiveChart()
-        interval = setInterval(function () {
+
+        checked = 0;
+        liveReportsNames = []
+
+        let liveReportsNamesList = liveReportsList()
+        if (liveReportsNamesList.length > 0) {
+            initLiveChart(liveReportsNamesList)
             $.ajax({
-                url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=eth,btc&tsyms=USD`,
+                url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${liveReportsNamesList}&tsyms=USD`,
                 cache: true,
                 success: data => {
                     loadLiveReports(data)
                 }
             })
-        }, 2000)
+            interval = setInterval(function () {
+                $.ajax({
+                    url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${liveReportsNamesList}&tsyms=USD`,
+                    cache: true,
+                    success: data => {
+                        loadLiveReports(data)
+                    }
+                })
+            }, 2000)
+        }
+        else {
+            alert("please select coins ")
+        }
     })
     $("#about-button").on("click", function () {
         $("#chartContainer").empty()
+        liveReportsNames = []
         clearInterval(interval)
         $("#coins-container").empty()
 
@@ -233,7 +246,7 @@ $(function () {
             </p>
         `
         $("#coins-container").append(about)
-        liveReportsList()
+        checked = 0;
     })
     $(document).on("click", ".show-less-button", function () {
         $(this).parent().children("div").toggle("slow")
@@ -253,14 +266,11 @@ $(function () {
         //Unchecking all cards
         cardsForUncheck.prop('checked', true);
 
-
-
         if (checked == 6) {
+            asignModal()
             $('#exampleModal').modal("show")
         }
 
-        $(".modal-body").html("")
-        asignModal()
     })
     $(document).on("click", ".form-check-input:checkbox:not(:checked)", function () {
         checked--;
@@ -268,21 +278,26 @@ $(function () {
         const cardsForUncheck = $(`input[name="${$(this).attr('name')}"]`);
         //Unchecking all cards
         cardsForUncheck.prop('checked', false);
+        $(".modal-body").html("")
 
     })
     setInterval(function () {
         localStorage.clear();
     }, 120000)
     const asignModal = function () {
+        $(".modal-body").html("")
         $(".form-check-input:checkbox:checked").each(function () {
             $(".modal-body").append($(this).parent().parent().clone().attr("aria-label", "Close").attr("data-bs-dismiss", "modal").attr("data-bs-dismiss", "modal"))
         })
     }
     const liveReportsList = () => {
         $(".form-check-input:checkbox:checked").each(function () {
-            let array = []
-            // array.push($(this).parent().parent())
-            console.log("element:  " + element)
+            liveReportsNames.push($(this)[0].name)
+            // const cardsForUncheck = $(`input[name="${$(this)[0].name}"]`);
+            // //Unchecking all cards
+            // cardsForUncheck.prop('checked', false);
         })
+        console.log("live report list = " + liveReportsNames)
+        return liveReportsNames
     }
 })
