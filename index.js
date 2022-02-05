@@ -40,7 +40,6 @@ $(function () {
         $(".show-less-button").hide()
         $(".progress").hide()
     }
-
     const loadMoreInfo = function (data, element, id) {
         element.empty()
         localStorage.setItem(`${id}`, JSON.stringify(data))
@@ -177,8 +176,6 @@ $(function () {
         })
         $("#chartContainer").CanvasJSChart(options);
     }
-
-
     $("#show-coins-button").on("click", function () {
         $(".progress").toggle("slow")
 
@@ -191,7 +188,6 @@ $(function () {
             }
         })
     })
-
     $(document).on("click", ".show-more-button", function () {
         let id = $(this).parent().attr("id")
         let coin = JSON.parse(localStorage.getItem(`${id}`))
@@ -210,7 +206,6 @@ $(function () {
             loadMoreInfo(coin, $(this).parent().children("div"), id)
         }
     })
-
     $("#show-live-reports-button").on("click", function () {
         $(".progress").toggle("slow")
         //liveReportsList()
@@ -225,7 +220,6 @@ $(function () {
             })
         }, 2000)
     })
-
     $("#about-button").on("click", function () {
         $("#chartContainer").empty()
         clearInterval(interval)
@@ -241,65 +235,49 @@ $(function () {
         $("#coins-container").append(about)
         liveReportsList()
     })
-
     $(document).on("click", ".show-less-button", function () {
         $(this).parent().children("div").toggle("slow")
         $(this).parent().children("button").toggle("fast")
     })
-
     $("#myInput").on("keyup", function () {
         var value = $(this).val().toLowerCase();
         $(".card").filter(function () {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
-
     $(document).on("click", ".form-check-input:checkbox:checked", function () {
         //$(this).switch("slow")
         checked++
         console.log(checked)
-        if (checked >= 5) {
-            $(".form-check-input").attr("data-bs-toggle", "modal")
-            $(".form-check-input").attr("data-bs-target", "#exampleModal")
+        const cardsForUncheck = $(`input[name="${$(this).attr('name')}"]`);
+        //Unchecking all cards
+        cardsForUncheck.prop('checked', true);
 
-        }
-        else {
-            $(".form-check-input").removeAttr("data-bs-toggle", "modal")
-            $(".form-check-input").removeAttr("data-bs-target", "#exampleModal")
+
+
+        if (checked == 6) {
+            $('#exampleModal').modal("show")
         }
 
         $(".modal-body").html("")
         asignModal()
     })
-
     $(document).on("click", ".form-check-input:checkbox:not(:checked)", function () {
         checked--;
+        console.log(checked)
         const cardsForUncheck = $(`input[name="${$(this).attr('name')}"]`);
         //Unchecking all cards
-        cardsForUncheck.prop('checked',false);
-
-
-        if (checked === 5) {
-            $(".form-check-input").attr("data-bs-toggle", "modal")
-            $(".form-check-input").attr("data-bs-target", "#exampleModal")
-        }
-        else {
-            $(".form-check-input").removeAttr("data-bs-toggle", "modal")
-            $(".form-check-input").removeAttr("data-bs-target", "#exampleModal")
-        }
+        cardsForUncheck.prop('checked', false);
 
     })
-
     setInterval(function () {
         localStorage.clear();
     }, 120000)
-
     const asignModal = function () {
         $(".form-check-input:checkbox:checked").each(function () {
             $(".modal-body").append($(this).parent().parent().clone().attr("aria-label", "Close").attr("data-bs-dismiss", "modal").attr("data-bs-dismiss", "modal"))
         })
     }
-
     const liveReportsList = () => {
         $(".form-check-input:checkbox:checked").each(function () {
             let array = []
@@ -307,5 +285,4 @@ $(function () {
             console.log("element:  " + element)
         })
     }
-
 })
