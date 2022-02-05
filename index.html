@@ -2,6 +2,10 @@
 <html>
 
 <head>
+    <script>
+
+    </script>
+
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Crypto Coins</title>
@@ -16,10 +20,12 @@
     <script src='index.js'></script>
 </head>
 
+
 <body class="body">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <h1 class="title">Cryptocurrency</h1>
         <a id="show-coins-button" class="navbar-brand">Coins</a>
+        <a id="show-live-reports-button" class="navbar-brand">Live Reports</a>
         <a id="about-button" class="navbar-brand">About</a>
         <form class="form-inline">
             <input id="myInput" class="form-control mr-sm-2" placeholder="Search" aria-label="Search">
@@ -52,6 +58,10 @@
 
     </div>
 
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
 </body>
 
 </html>

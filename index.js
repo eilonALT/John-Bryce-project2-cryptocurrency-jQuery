@@ -1,4 +1,6 @@
 let checked = 0;
+let interval;
+let options;
 
 $(function () {
     $(".progress").hide()
@@ -7,6 +9,8 @@ $(function () {
 
         let cardsData = await data
         $("#coins-container").empty()
+        $("#chartContainer").empty()
+        clearInterval(interval)
 
         let cards = ""
         for (let i = 0; i < 50; i++) {
@@ -53,6 +57,127 @@ $(function () {
         element.toggle("slow")
         element.parent().children("button").toggle("fast")
     }
+    const initLiveChart = function () {
+        $("#coins-container").empty()
+
+        // let names = []
+        // Object.keys(data).forEach(element => {
+        //     if (!!element) {
+        //         names.push(element)
+        //     }
+        // })
+
+        options = {
+            animationEnabled: true,
+            theme: "light2",
+            title: {
+                text: "Live Currency Details"
+            },
+            axisX: {
+                title: "Time",
+                valueFormatString: "HH:mm:ss"
+            },
+            axisY: {
+                title: "Value In Dollars",
+                suffix: "$"
+            },
+            toolTip: {
+                shared: true
+            },
+            legend: {
+                cursor: "pointer",
+                verticalAlign: "bottom",
+                horizontalAlign: "left",
+                dockInsidePlotArea: true,
+                itemclick: toogleDataSeries
+            },
+            data: [{
+                type: "line",
+                showInLegend: true,
+                name: "names[0]",
+                markerType: "square",
+                xValueFormatString: 'HH:mm:ss',
+                color: "black",
+                yValueFormatString: "#,##0K",
+                dataPoints: [
+                ]
+            },
+            {
+                type: "line",
+                showInLegend: true,
+                name: "names[1]",
+                markerType: "square",
+                xValueFormatString: 'HH:mm:ss',
+                color: "yellow",
+                yValueFormatString: "#,##0K",
+                dataPoints: [
+                ]
+            }, {
+                type: "line",
+                showInLegend: true,
+                name: "names[1]",
+                markerType: "square",
+                xValueFormatString: 'HH:mm:ss',
+                color: "green",
+                yValueFormatString: "#,##0K",
+                dataPoints: [
+                ]
+            }, {
+                type: "line",
+                showInLegend: true,
+                name: "names[1]",
+                markerType: "square",
+                xValueFormatString: 'HH:mm:ss',
+                color: "red",
+                yValueFormatString: "#,##0K",
+                dataPoints: [
+                ]
+            }, {
+                type: "line",
+                showInLegend: true,
+                name: "names[1]",
+                markerType: "square",
+                xValueFormatString: 'HH:mm:ss',
+                color: "blue",
+                yValueFormatString: "#,##0K",
+                dataPoints: [
+                ]
+            },
+            ]
+        };
+        $("#chartContainer").CanvasJSChart(options);
+
+        function toogleDataSeries(e) {
+            if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                e.dataSeries.visible = false;
+            } else {
+                e.dataSeries.visible = true;
+            }
+            e.chart.render();
+        }
+        $(".progress").hide()
+    }
+    const loadLiveReports = function (data) {
+        let values = []
+
+        Object.entries(data).forEach(element => {
+            if (!!element) {
+                console.log(Object.entries(element[1])[0][1])
+                values.push(Object.entries(element[1])[0][1])
+            }
+        })
+
+        //console.log("names:" + names)
+        console.log("values:" + values)
+
+        let i = 0;
+        values.forEach(() => {
+            options.data[i].dataPoints.push({ x: new Date(), y: values[i] })
+            i++
+        })
+        $("#chartContainer").CanvasJSChart(options);
+    }
+
 
     $("#show-coins-button").on("click", function () {
         $(".progress").toggle("slow")
@@ -86,8 +211,26 @@ $(function () {
         }
     })
 
+    $("#show-live-reports-button").on("click", function () {
+        $(".progress").toggle("slow")
+        //liveReportsList()
+        initLiveChart()
+        interval = setInterval(function () {
+            $.ajax({
+                url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=eth,btc&tsyms=USD`,
+                cache: true,
+                success: data => {
+                    loadLiveReports(data)
+                }
+            })
+        }, 2000)
+    })
+
     $("#about-button").on("click", function () {
+        $("#chartContainer").empty()
+        clearInterval(interval)
         $("#coins-container").empty()
+
         let about = `
             <p class ="about">
                 author: eilon alter <br>
@@ -96,13 +239,13 @@ $(function () {
             </p>
         `
         $("#coins-container").append(about)
+        liveReportsList()
     })
 
     $(document).on("click", ".show-less-button", function () {
         $(this).parent().children("div").toggle("slow")
         $(this).parent().children("button").toggle("fast")
     })
-
 
     $("#myInput").on("keyup", function () {
         var value = $(this).val().toLowerCase();
@@ -115,9 +258,10 @@ $(function () {
         //$(this).switch("slow")
         checked++
         console.log(checked)
-        if (checked === 5) {
+        if (checked >= 5) {
             $(".form-check-input").attr("data-bs-toggle", "modal")
             $(".form-check-input").attr("data-bs-target", "#exampleModal")
+
         }
         else {
             $(".form-check-input").removeAttr("data-bs-toggle", "modal")
@@ -142,7 +286,7 @@ $(function () {
         }
 
     })
-  
+
     setInterval(function () {
         localStorage.clear();
     }, 120000)
@@ -150,6 +294,14 @@ $(function () {
     const asignModal = function () {
         $(".form-check-input:checkbox:checked").each(function () {
             $(".modal-body").append($(this).parent().parent().clone().attr("aria-label", "Close").attr("data-bs-dismiss", "modal").attr("data-bs-dismiss", "modal"))
+        })
+    }
+
+    const liveReportsList = () => {
+        $(".form-check-input:checkbox:checked").each(function () {
+            let array = []
+            // array.push($(this).parent().parent())
+            console.log("element:  " + element)
         })
     }
 
