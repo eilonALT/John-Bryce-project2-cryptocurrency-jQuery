@@ -1,7 +1,7 @@
-let checked = 0;
-let interval;
-let options;
-let liveReportsNames = []
+let checked = 0;//flag for modal
+let interval;//to be able to clear the interval outside of his func
+let options;//for using the chart's option in two differnt funcs
+let liveReportsNames = []//same
 
 $(function () {
     $(".progress").hide()
